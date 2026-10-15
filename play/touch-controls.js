@@ -134,6 +134,12 @@
     document.addEventListener('touchmove', function (e) {
       if (e.touches.length > 1) e.preventDefault();
     }, { passive: false });
+    // iOS Safari has no setting to turn off its edge swipe back and forward,
+    // and ignores overscroll-behavior for it. Since iOS 13.4, cancelling
+    // touchstart blocks that swipe. This page never scrolls and has no links,
+    // so every touch start can be cancelled. Pointer events, which the
+    // control bar uses, still arrive.
+    document.addEventListener('touchstart', block, { passive: false });
   }
 
   // The least height the bar needs: its tallest group plus its padding.
