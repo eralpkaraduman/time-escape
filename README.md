@@ -5,6 +5,13 @@ Steal back a sword you left in the Stone Age, then outrun the cave people back t
 
 The post-compo version only survived as a compiled SWF. In October 2026 it was rebuilt in C with raylib, from a decompile of that SWF, using the compo source as a reference.
 
+## Play it
+
+- [Game page](https://eralpkaraduman.github.io/time-escape/), with the description, controls and screenshots.
+- [Game only](https://eralpkaraduman.github.io/time-escape/play/), full window.
+
+It runs in the browser on desktop with a keyboard, and on phones and tablets with on-screen controls.
+
 ## What is here
 
 - `escape_postCompo.swf`, `postCompo.html`: the post-compo Flash build from 28 August 2011. The C port follows this version.
