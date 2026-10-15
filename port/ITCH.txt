@@ -1,0 +1,94 @@
+TIME ESCAPE: STUFF FROM THE PAST
+itch.io page text. Copy each part into the matching field.
+Lines in [square brackets] are for you to fill in or delete.
+
+
+TITLE
+Time Escape: Stuff From The Past
+
+Other title options
+- Stuff From The Past (the title used in the original game)
+- Time Escape
+
+
+SHORT DESCRIPTION (tagline)
+Steal back a sword you left in the Stone Age, then outrun the cave people. A Ludum Dare 21 game, rebuilt in C.
+
+
+DESCRIPTION
+
+You fix mistakes in time for a living. On your last job, you left your claymore swords behind in the prehistoric era. Now the balance of time is broken, and only you can put it right.
+
+Step through a portal into the Stone Age. Cross the open land, find the cave, and take the sword from its beam of light.
+
+The cave people believe the sword is a gift from the gods. The moment you take it, every one of them turns on you. Fight your way out with the sword, and escape back through the portal you came in by. Make it home alive, and you win.
+
+Die, and you will see a message from the past. The body tumbles in slow motion. Press any key to try again.
+
+This is the post-compo version, finished a week after the jam. It adds a parallax background of trees and clouds, and tighter, faster player movement.
+
+
+AIM OF THE GAME
+Take the sword from the cave, then escape back through the portal without dying.
+
+
+HOW TO PLAY
+1. Press X to page through the intro, or keep pressing it to skip.
+2. In the time HQ, walk into any of the five portals. They all lead to the same place for now.
+3. In the Stone Age, head right. Jump the gaps. Falling into one kills you.
+4. Find the cave and the sword glowing in its beam of light. Touch the sword to take it.
+5. The cave people now attack. Press C to swing the sword and knock them back.
+6. Run back left to the portal where you started, and step through it.
+7. Back in the HQ, wait a moment. The screen fades to white, and you win.
+
+Tips
+- Hold X longer to jump higher. A short tap gives a short hop.
+- Cave people only hurt you from the front. Turn and face them when you swing.
+- Each cave person takes four hits. You take ten. Watch the health bar at the top.
+- When your health drops below half, the heart starts to flash.
+
+
+CONTROLS
+Left and Right arrows: move
+X: jump. Hold it for a higher jump.
+C: swing the sword, once you have it
+Any key on the death screen: try again
+
+
+HISTORY
+I made this game for Ludum Dare 21, held from 19 to 22 August 2011. The theme was "Escape". I entered the Compo, the solo 48-hour version, as aukyr.
+It is written in ActionScript 3 with the Flixel 2.55 game library, in a FlashDevelop project, compiled with the Flex SDK 4.5.
+The compo version was submitted on 22 August 2011. This post-compo version was built on 28 August 2011.
+Levels are drawn as small PNG images, one pixel per tile. Black pixels are ground, and colored pixels mark the portal, the sword and the cave people.
+
+Note: the intro text inside the game says "LUDUM DARE 20". The event was actually Ludum Dare 21. The port keeps the original text.
+
+[Optional: add your Ludum Dare 21 entry link here, if it is still online.]
+
+
+HOW IT WAS PORTED
+Flash Player is gone from every browser. The compo source code survived, but the post-compo version only existed as a compiled SWF file.
+
+In October 2026 the post-compo SWF was decompiled with JPEXS Free Flash Decompiler, to read its game logic and extract the art. The compo source served as a readable reference. The game was then rewritten by hand in plain C, with readable names and comments. It is not a translation of decompiled code.
+
+The port uses raylib 6.0 for drawing and input. A small Flixel 2.5 style layer in C copies Flixel's movement maths and its collision code. It also copies the auto-tiling, the following camera, slow motion, screen shake and fades. The player and the cave people move, jump and collide as they did in 2011.
+
+The web version is compiled to WebAssembly with Emscripten. The same code also builds for macOS, Windows and Linux.
+
+The port was written with Claude Code, Anthropic's coding agent, running the Claude Opus 5.5 model.
+
+
+ITCH.IO SETTINGS
+Cover image: timeescape-cover-630x500.png (630 x 500, the size itch.io recommends)
+Screenshots: the 5 files in screenshots/, at 3x the game size (720 x 480)
+Kind of project: HTML
+Upload: timeescape-itch.zip, and tick "This file will be played in the browser"
+Embed options: Embed in page
+Viewport dimensions: 480 x 320
+Tick "Fullscreen button". The game scales up sharply in fullscreen.
+Leave "Mobile friendly" unticked. The game needs a keyboard.
+Frame options: leave "Automatically start on page load" unticked. The click on "Run game" gives the game keyboard focus.
+Release status: Released
+Classification: Games
+Genre: Platformer
+Suggested tags: ludum-dare, ludum-dare-21, pixel-art, flash, flixel, 2d, short, time-travel, singleplayer

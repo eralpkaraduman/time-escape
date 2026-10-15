@@ -1,0 +1,99 @@
+# Time Escape (C port)
+
+A C rewrite of the post-compo version of "Stuff From The Past", a Ludum Dare 21 game from 2011.
+It is built on raylib 6.0. raylib is vendored in `vendor/raylib`, so builds need no network.
+
+Arrow keys move, X jumps, and C swings the sword once you have it.
+Take the sword from the cave and escape back through the portal.
+
+## Where the code came from
+
+The post-compo SWF has no surviving source.
+The code was rebuilt from a decompile of `escape_postCompo.swf`.
+The compo source in `ld21_escape_stuffFromThePast_aukyr_SRC.zip` served as a readable reference.
+
+## Layout
+
+- `src/flx.c`, `src/flx.h`: a small Flixel 2.5 style layer with sprites, collision, auto-tiling, camera, text and input.
+- `src/actors.c`: the player, cave people, the carried sword, the sword on its pedestal, portals and sparkles.
+- `src/game.c`: the five screens, ported from the original FlxStates.
+- `src/main.c`: window, fixed 60 Hz loop, slow motion, screen shake and pixel-perfect scaling.
+- `tests/check.c`: logic checks that run without a window.
+- `assets/`: sprites, tiles and level layout images taken from the original SWF.
+
+Levels are PNG images with one pixel per 8x8 tile.
+Black pixels are solid ground. Colored pixels mark the spawn point, portals, the sword and the cave people.
+
+## Build
+
+Desktop (macOS, Windows, Linux) needs CMake 3.16 or newer and a C compiler.
+
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+./build/timeescape
+```
+
+On Linux, install the X11 and OpenGL headers first.
+On Debian or Ubuntu that is `libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev`.
+
+Web needs Emscripten.
+
+```sh
+emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release
+cmake --build build-web
+python3 -m http.server 8765 --bind 127.0.0.1 --directory build-web
+```
+
+Then open http://127.0.0.1:8765/.
+
+## Publish on itch.io
+
+```sh
+emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release
+cmake --build build-web --target itch
+```
+
+Upload `build-web/timeescape-itch.zip`. On the itch.io project page, use these settings:
+
+- Kind of project: HTML.
+- Tick "This file will be played in the browser".
+- Viewport dimensions: 480 x 320.
+- Leave "Mobile friendly" unticked, since the game needs a keyboard.
+
+Logic checks run from this folder:
+
+```sh
+./build/timeescape_check
+```
+
+## Code checks
+
+These tools are deterministic: the same code gives the same result every run.
+
+Static analysis reads the code without running it.
+
+```sh
+cppcheck --enable=warning,performance,portability,style --std=c99 \
+    -D__STDC__=1 -D__STDC_VERSION__=199901L --quiet \
+    -I src -I vendor/raylib/src --suppress=missingIncludeSystem src tests
+for f in src/*.c tests/*.c; do clang --analyze -I src -I vendor/raylib/src "$f" -o /dev/null; done
+```
+
+AddressSanitizer catches bad memory access, and UndefinedBehaviorSanitizer catches undefined behaviour.
+Both run the logic checks with extra checking compiled in.
+
+```sh
+cmake -S . -B build-asan -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_C_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined" \
+    -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
+cmake --build build-asan --target time
+./build-asan/time
+```
+
+On macOS, the built-in `leaks` tool finds memory that was never freed.
+On Linux, AddressSanitizer reports leaks itself.
+
+```sh
+leaks --atExit -- ./build/time
+```

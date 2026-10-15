@@ -1,0 +1,14 @@
+.DS_Store
+.cache/
+
+# Generated from escape_postCompo.swf with JPEXS FFDec. Rebuild it instead of storing it.
+decompiled/
+
+# Unpacked copy of ld21_escape_stuffFromThePast_aukyr_SRC.zip, which is kept.
+compo_src/
+
+# Build output from port/. The release builds live in dist/.
+port/build/
+port/build-web/
+port/build-asan/
+port/compile_commands.json
