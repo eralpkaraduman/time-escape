@@ -25,21 +25,23 @@ target_link_libraries(timeescape raylib)
 
 if(EMSCRIPTEN)
     # The web page around the game and its touch controls are shared with
-    # Kurban Bayrami. They are downloaded from that repo at a pinned commit,
-    # and each file is checked against its SHA-256 hash.
-    set(SHARED_WEB_COMMIT 2fa284a245983d0fc9c697edc12cf02176fe21de)
-    set(SHARED_WEB_URL "https://raw.githubusercontent.com/eralpkaraduman/kurban-bayrami/${SHARED_WEB_COMMIT}/port/web")
+    # Kurban Bayrami, which keeps them in port/web/. Each configure downloads
+    # them from that repo. By default it follows the main branch, so the
+    # latest version arrives on the next configure. For a build that must not
+    # change, pin a commit: cmake -DSHARED_WEB_REF=<commit hash> ...
+    # GitHub may serve a branch's files up to 5 minutes old after a push.
+    set(SHARED_WEB_REF "main" CACHE STRING "kurban-bayrami branch or commit to take the shared web files from")
+    set(SHARED_WEB_URL "https://raw.githubusercontent.com/eralpkaraduman/kurban-bayrami/${SHARED_WEB_REF}/port/web")
     set(WEB_DIR "${CMAKE_BINARY_DIR}/shared-web")
-    foreach(entry
-            "shell.html.in=bb90c2b9a7db168345780a712c3f0592da3dc49f20df04cf2ce546b2b67a88f1"
-            "site.html.in=33cde1e531e355f16d4a36450e817970f21c1b7e216e61081178ac95a5b9567b"
-            "touch-controls.js=c7d1d21acb13b73e98d4559bda5b53170a013c5e0ba38e9700a79b7d86c4cdf2"
-            "touch-controls.css=46aa24d82ea792a5ddb62fab4f286ff360b0916f45f5d5d3cc81fcc7a4e19462")
-        string(REPLACE "=" ";" entry "${entry}")
-        list(GET entry 0 name)
-        list(GET entry 1 hash)
-        file(DOWNLOAD "${SHARED_WEB_URL}/${name}" "${WEB_DIR}/${name}" EXPECTED_HASH SHA256=${hash})
+    foreach(name shell.html.in site.html.in touch-controls.js touch-controls.css)
+        file(DOWNLOAD "${SHARED_WEB_URL}/${name}" "${WEB_DIR}/${name}" STATUS status)
+        list(GET status 0 code)
+        if(NOT code EQUAL 0)
+            list(GET status 1 reason)
+            message(FATAL_ERROR "Could not download ${name} from ${SHARED_WEB_URL}: ${reason}")
+        endif()
     endforeach()
+    message(STATUS "Shared web files from kurban-bayrami at ${SHARED_WEB_REF}")
 
     # Fill in the page for this game. Key codes are raylib's: arrows 262-265,
     # X 88, C 67. Up and down only matter as "any key" on the death screen,
@@ -79,7 +81,10 @@ if(EMSCRIPTEN)
         --preload-file ${CMAKE_SOURCE_DIR}/assets@assets
         --shell-file ${CMAKE_BINARY_DIR}/shell.html)
     # Relink when the page changes, and put the touch controls beside it.
-    set_target_properties(timeescape PROPERTIES LINK_DEPENDS "${CMAKE_BINARY_DIR}/shell.html")
+    # Listing the touch-control files here makes a change to only them still
+    # rerun the link, and with it the copy below.
+    set_target_properties(timeescape PROPERTIES LINK_DEPENDS
+        "${CMAKE_BINARY_DIR}/shell.html;${WEB_DIR}/touch-controls.js;${WEB_DIR}/touch-controls.css")
     add_custom_command(TARGET timeescape POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             "${WEB_DIR}/touch-controls.js" "${WEB_DIR}/touch-controls.css"

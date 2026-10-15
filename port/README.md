@@ -31,10 +31,16 @@ With a keyboard, the bar stays hidden. Add `?touch=1` to the address to test the
 The bar calls `flx_touch_key()` in `src/flx.c`, which feeds the same input as the keyboard.
 
 The web page and the touch controls are shared with Kurban Bayrami, which keeps them in its `port/web/`.
-On configure, CMake downloads `shell.html.in`, `site.html.in`, `touch-controls.js` and `touch-controls.css` from that repo at a pinned commit.
-It checks each file's SHA-256 hash, then fills in this game's title, tagline, colours, game shape and touch keys.
+On every configure, CMake downloads `shell.html.in`, `site.html.in`, `touch-controls.js` and `touch-controls.css` from that repo's `main` branch.
+It then fills in this game's title, tagline, colours, game shape and touch keys.
 The cover page's text comes from `web/site-content.html`.
-To take a newer version, update `SHARED_WEB_COMMIT` and the four hashes in `CMakeLists.txt`.
+
+So a change pushed to Kurban reaches this game on its next configure. GitHub may take up to 5 minutes to serve the new files.
+For a build that must not change, pin a Kurban commit:
+
+```sh
+emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release -DSHARED_WEB_REF=<commit hash>
+```
 
 Levels are PNG images with one pixel per 8x8 tile.
 Black pixels are solid ground. Colored pixels mark the spawn point, portals, the sword and the cave people.
