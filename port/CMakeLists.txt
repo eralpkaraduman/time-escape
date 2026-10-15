@@ -27,11 +27,12 @@ if(EMSCRIPTEN)
     # The web page around the game and its touch controls are shared with
     # Kurban Bayrami. They are downloaded from that repo at a pinned commit,
     # and each file is checked against its SHA-256 hash.
-    set(SHARED_WEB_COMMIT 7fa49b284b8f15ba1f1b34adddabfcd59c14fb10)
+    set(SHARED_WEB_COMMIT 2fa284a245983d0fc9c697edc12cf02176fe21de)
     set(SHARED_WEB_URL "https://raw.githubusercontent.com/eralpkaraduman/kurban-bayrami/${SHARED_WEB_COMMIT}/port/web")
     set(WEB_DIR "${CMAKE_BINARY_DIR}/shared-web")
     foreach(entry
-            "shell.html.in=89586e4c5c8e951db598b665f56df6e109c3ebc20645fef0359ae0705cfe6f8c"
+            "shell.html.in=bb90c2b9a7db168345780a712c3f0592da3dc49f20df04cf2ce546b2b67a88f1"
+            "site.html.in=33cde1e531e355f16d4a36450e817970f21c1b7e216e61081178ac95a5b9567b"
             "touch-controls.js=c7d1d21acb13b73e98d4559bda5b53170a013c5e0ba38e9700a79b7d86c4cdf2"
             "touch-controls.css=46aa24d82ea792a5ddb62fab4f286ff360b0916f45f5d5d3cc81fcc7a4e19462")
         string(REPLACE "=" ";" entry "${entry}")
@@ -47,6 +48,23 @@ if(EMSCRIPTEN)
     set(WEB_TOUCH_DPAD "{ left: 263, right: 262 }")
     set(WEB_TOUCH_BUTTONS "[{ label: 'X', caption: 'Jump', key: 88 }, { label: 'C', caption: 'Sword', key: 67 }]")
     configure_file("${WEB_DIR}/shell.html.in" "${CMAKE_BINARY_DIR}/shell.html" @ONLY)
+
+    # The GitHub Pages cover page, from the shared template. The page text
+    # comes from web/site-content.html.
+    set(SITE_TAGLINE "Steal back a sword you left in the Stone Age, then outrun the cave people. A Ludum Dare 21 game, rebuilt in C.")
+    set(SITE_URL "https://eralpkaraduman.github.io/time-escape/")
+    set(SITE_THEME "--bg: #17130e; --surface: #221c15; --text: #f1ebe3; --muted: #b3a798; --accent: #8bd0fc; --accent-strong: #fff8af; --border: #3a3025;")
+    set(SITE_GAME_RATIO "3 / 2")
+    # On touch screens the game frame holds the game at full width plus the
+    # control bar. The frame is taller than wide, so the bar sizes its
+    # buttons by the screen width. The D-pad is one row, so the two staggered
+    # round buttons set the bar's height: 1.6 times their size, plus 40 px.
+    set(SITE_TOUCH_FRAME_HEIGHT "calc(100vw * 2 / 3 + 1.6 * clamp(56px, 17vw, 76px) + 42px)")
+    set(SITE_HINT_KEYBOARD "Click the game, then press <kbd>X</kbd> to page through the intro. You need a keyboard.")
+    set(SITE_HINT_TOUCH "Tap <b>X</b> to page through the intro. Play with the buttons under the game.")
+    file(READ "${CMAKE_SOURCE_DIR}/web/site-content.html" SITE_CONTENT)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/web/site-content.html")
+    configure_file("${WEB_DIR}/site.html.in" "${CMAKE_BINARY_DIR}/site.html" @ONLY)
 
     target_compile_definitions(timeescape PRIVATE PLATFORM_WEB)
     # itch.io wants index.html at the root of the uploaded zip.
@@ -79,7 +97,7 @@ if(EMSCRIPTEN)
     add_custom_target(pages
         COMMAND ${CMAKE_COMMAND} -E rm -rf "${PAGES_DIR}"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${PAGES_DIR}/play" "${PAGES_DIR}/fonts"
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/web/site.html" "${PAGES_DIR}/index.html"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/site.html" "${PAGES_DIR}/index.html"
         COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/timeescape-cover-630x500.png" "${PAGES_DIR}/cover.png"
         COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/screenshots" "${PAGES_DIR}/screenshots"
         COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/assets/system.ttf" "${PAGES_DIR}/fonts/system.ttf"

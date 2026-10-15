@@ -1,0 +1,71 @@
+    <!-- Time Escape's cover page text. CMake puts it into site.html.in. -->
+    <h2>About</h2>
+    <p>You fix mistakes in time for a living. On your last job, you left your claymore swords behind in the prehistoric era. Now the balance of time is broken, and only you can put it right.</p>
+    <p>Step through a portal into the Stone Age. Cross the open land, find the cave, and take the sword from its beam of light.</p>
+    <p>The cave people believe the sword is a gift from the gods. The moment you take it, every one of them turns on you. Fight your way out with the sword, and escape back through the portal you came in by. Make it home alive, and you win.</p>
+    <p>Die, and you will see a message from the past. The body tumbles in slow motion. Press any key to try again.</p>
+    <p>This is the post-compo version, finished a week after the jam. It adds a parallax background of trees and clouds, and tighter, faster player movement.</p>
+
+    <h2>Aim of the game</h2>
+    <p>Take the sword from the cave, then escape back through the portal without dying.</p>
+
+    <h2>How to play</h2>
+    <ol>
+      <li>Press X to page through the intro, or keep pressing it to skip.</li>
+      <li>In the time HQ, walk into any of the five portals. They all lead to the same place for now.</li>
+      <li>In the Stone Age, head right. Jump the gaps. Falling into one kills you.</li>
+      <li>Find the cave and the sword glowing in its beam of light. Touch the sword to take it.</li>
+      <li>The cave people now attack. Press C to swing the sword and knock them back.</li>
+      <li>Run back left to the portal where you started, and step through it.</li>
+      <li>Back in the HQ, wait a moment. The screen fades to white, and you win.</li>
+    </ol>
+    <ul>
+      <li>Hold X longer to jump higher. A short tap gives a short hop.</li>
+      <li>Cave people only hurt you from the front. Turn and face them when you swing.</li>
+      <li>Each cave person takes four hits. You take ten. Watch the health bar at the top.</li>
+      <li>When your health drops below half, the heart starts to flash.</li>
+    </ul>
+
+    <h2>Controls</h2>
+    <p class="hint-touch">On a touch screen, the buttons under the game stand in for these keys.</p>
+    <dl class="controls">
+      <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Move</dd>
+      <dt><kbd>X</kbd></dt><dd>Jump. Hold it for a higher jump.</dd>
+      <dt><kbd>C</kbd></dt><dd>Swing the sword, once you have it</dd>
+      <dt>Any key</dt><dd>Try again, on the death screen</dd>
+    </dl>
+
+    <h2>Screenshots</h2>
+    <div class="shots two">
+      <img src="screenshots/1-time-hq.png" width="720" height="480" alt="The time HQ with five portals">
+      <img src="screenshots/2-stone-age.png" width="720" height="480" alt="Arriving in the Stone Age, with trees and clouds behind">
+      <img src="screenshots/3-the-sword.png" width="720" height="480" alt="The sword in a beam of light inside the cave">
+      <img src="screenshots/4-fight.png" width="720" height="480" alt="Swinging the sword at angry cave people">
+      <img src="screenshots/5-death.png" width="720" height="480" alt="The death screen with a skull and a message from the past">
+    </div>
+
+    <h2>History</h2>
+    <p>I made this game for Ludum Dare 21, held from 19 to 22 August 2011. The theme was "Escape". I entered the Compo, the solo 48-hour version, as aukyr.</p>
+    <p>It is written in ActionScript 3 with the Flixel 2.55 game library, in a FlashDevelop project, compiled with the Flex SDK 4.5. The compo version was submitted on 22 August 2011. This post-compo version was built on 28 August 2011.</p>
+    <p>Levels are drawn as small PNG images, one pixel per tile. Black pixels are ground, and colored pixels mark the portal, the sword and the cave people.</p>
+    <p class="note">The intro text inside the game says "LUDUM DARE 20". The event was actually Ludum Dare 21. The port keeps the original text.</p>
+
+    <h2>How it was ported</h2>
+    <p>Flash Player is gone from every browser. The compo source code survived, but the post-compo version only existed as a compiled SWF file.</p>
+    <p>In October 2026 the post-compo SWF was decompiled with JPEXS Free Flash Decompiler, to read its game logic and extract the art. The compo source served as a readable reference. The game was then rewritten by hand in plain C, with readable names and comments. It is not a translation of decompiled code.</p>
+    <p>The port uses raylib 6.0 for drawing and input. A small Flixel 2.5 style layer in C copies Flixel's movement maths and its collision code. It also copies the auto-tiling, the following camera, slow motion, screen shake and fades. The player and the cave people move, jump and collide as they did in 2011.</p>
+    <p>The web version is compiled to WebAssembly with Emscripten. The same code also builds for macOS, Windows and Linux.</p>
+    <p>The port was written with Claude Code, Anthropic's coding agent, running the Claude Opus 5.5 model.</p>
+
+    <h2>More information</h2>
+    <table class="info">
+      <tr><th>Made</th><td>August 2011</td></tr>
+      <tr><th>Event</th><td>Ludum Dare 21 Compo, theme "Escape"</td></tr>
+      <tr><th>Original</th><td>Flash, ActionScript 3, Flixel 2.55</td></tr>
+      <tr><th>Port</th><td>C99, raylib 6.0, WebAssembly</td></tr>
+      <tr><th>Genre</th><td>Platformer</td></tr>
+      <tr><th>Controls</th><td>Keyboard, or touch on phones and tablets</td></tr>
+      <tr><th>Source</th><td><a href="https://github.com/eralpkaraduman/time-escape">github.com/eralpkaraduman/time-escape</a></td></tr>
+    </table>
+
+    <footer>Time Escape: Stuff From The Past by Eralp Karaduman (aukyr), 2011. C port, 2026.</footer>
