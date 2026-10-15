@@ -61,6 +61,19 @@ Upload `build-web/timeescape-itch.zip`. On the itch.io project page, use these s
 - Viewport dimensions: 480 x 320.
 - Leave "Mobile friendly" unticked, since the game needs a keyboard.
 
+## Publish on GitHub Pages
+
+The site is live at https://eralpkaraduman.github.io/time-escape/.
+It has a cover page at the root, from `web/site.html`, and the game itself under `play/`.
+
+```sh
+emcmake cmake -S . -B build-web -DCMAKE_BUILD_TYPE=Release
+cmake --build build-web --target pages
+```
+
+This assembles the whole site in `build-web/pages/`.
+Commit that folder's contents to the `gh-pages` branch and push it. GitHub serves that branch.
+
 Logic checks run from this folder:
 
 ```sh

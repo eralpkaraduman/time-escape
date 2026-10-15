@@ -42,6 +42,21 @@ if(EMSCRIPTEN)
             index.html index.js index.wasm index.data
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         DEPENDS timeescape)
+    # cmake --build build-web --target pages  ->  build-web/pages/, the GitHub
+    # Pages site: a cover page at the root and the game itself under play/.
+    set(PAGES_DIR "${CMAKE_BINARY_DIR}/pages")
+    add_custom_target(pages
+        COMMAND ${CMAKE_COMMAND} -E rm -rf "${PAGES_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${PAGES_DIR}/play" "${PAGES_DIR}/fonts"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/web/site.html" "${PAGES_DIR}/index.html"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/timeescape-cover-630x500.png" "${PAGES_DIR}/cover.png"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/screenshots" "${PAGES_DIR}/screenshots"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/assets/system.ttf" "${PAGES_DIR}/fonts/system.ttf"
+        COMMAND ${CMAKE_COMMAND} -E copy index.html index.js index.wasm index.data "${PAGES_DIR}/play"
+        COMMAND ${CMAKE_COMMAND} -E touch "${PAGES_DIR}/.nojekyll"
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS timeescape
+        VERBATIM)
 else()
     if(NOT MSVC)
         target_link_libraries(timeescape m)
