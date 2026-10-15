@@ -39,7 +39,7 @@ static void player_update_jump(Player *p)
     // A fresh press while grounded arms the jump. Holding X keeps lifting
     // for up to a quarter second, so a tap gives a short hop.
     if (p->jump == 0 && flx_key_pressed(KEY_X)) p->canJump = true;
-    if (p->jump >= 0 && IsKeyDown(KEY_X) && p->canJump) {
+    if (p->jump >= 0 && flx_key_down(KEY_X) && p->canJump) {
         p->jump += flx_elapsed;
         if (p->jump > PLAYER_JUMP_HOLD_LIMIT) {
             p->canJump = false;
@@ -66,12 +66,12 @@ void player_update(Player *p, float mapHeight)
         // The offset keeps the drawn body centered on the narrow hitbox.
         s->acceleration.x = 0;
         bool onScreen = flx_sprite_on_screen(s);
-        if (IsKeyDown(KEY_RIGHT) && onScreen) {
+        if (flx_key_down(KEY_RIGHT) && onScreen) {
             s->acceleration.x = s->drag.x / 2;
             s->facing = FLX_RIGHT;
             s->offset.x = 3;
         }
-        if (IsKeyDown(KEY_LEFT) && onScreen) {
+        if (flx_key_down(KEY_LEFT) && onScreen) {
             s->acceleration.x = -s->drag.x / 2;
             s->facing = FLX_LEFT;
             s->offset.x = 2;
@@ -89,7 +89,7 @@ void player_update(Player *p, float mapHeight)
             p->death = DEATH_FALL;
         }
 
-        if (IsKeyDown(KEY_C) && p->weapon) claymore_shoot(p->weapon);
+        if (flx_key_down(KEY_C) && p->weapon) claymore_shoot(p->weapon);
     }
 
     if (!s->alive) flx_sprite_play(s, "dead");

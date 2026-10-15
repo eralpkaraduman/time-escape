@@ -20,6 +20,20 @@ The compo source in `ld21_escape_stuffFromThePast_aukyr_SRC.zip` served as a rea
 - `src/main.c`: window, fixed 60 Hz loop, slow motion, screen shake and pixel-perfect scaling.
 - `tests/check.c`: logic checks that run without a window.
 - `assets/`: sprites, tiles and level layout images taken from the original SWF.
+- `web/site.html`: the GitHub Pages cover page.
+
+## Web page and touch controls
+
+On a touch screen, a control bar sits under the game: left and right, X to jump and C to swing the sword.
+The game fills the screen width, and the page never zooms or scrolls.
+With a keyboard, the bar stays hidden. Add `?touch=1` to the address to test the touch layout on a desktop.
+
+The bar calls `flx_touch_key()` in `src/flx.c`, which feeds the same input as the keyboard.
+
+The web page and the touch controls are shared with Kurban Bayrami, which keeps them in its `port/web/`.
+On configure, CMake downloads `shell.html.in`, `touch-controls.js` and `touch-controls.css` from that repo at a pinned commit.
+It checks each file's SHA-256 hash, then fills in this game's title and touch keys.
+To take a newer version, update `SHARED_WEB_COMMIT` and the three hashes in `CMakeLists.txt`.
 
 Levels are PNG images with one pixel per 8x8 tile.
 Black pixels are solid ground. Colored pixels mark the spawn point, portals, the sword and the cave people.

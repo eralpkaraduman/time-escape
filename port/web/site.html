@@ -49,11 +49,24 @@
   .shots img { border-radius: 6px; border: 1px solid var(--border); width: 100%; }
   .note { font-size: 14px; color: var(--muted); }
   footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+  .hint-touch { display: none; }
   @media (max-width: 760px) {
     .layout { grid-template-columns: 1fr; }
-    aside { order: -1; }
     .shots { grid-template-columns: 1fr; }
     h1 { font-size: 24px; }
+  }
+  /* Touch screens: the game and its control bar run edge to edge, and the
+     frame is as tall as the game plus the bar. This frame is taller than it
+     is wide, so the bar sizes its buttons by the screen width (see
+     touch-controls.css). This game's D-pad is one row, so the two staggered
+     round buttons, 1.6 times their size, set the bar's height, plus 40 px of
+     padding. The text below scrolls. */
+  @media (pointer: coarse) {
+    .game { margin: 0 -16px; border: 0; border-radius: 0; }
+    .game iframe { max-width: none; aspect-ratio: auto; height: calc(100vw * 2 / 3 + 1.6 * clamp(56px, 17vw, 76px) + 42px); }
+    .hint-desktop { display: none; }
+    .hint-touch { display: inline; }
+    p.hint-touch { display: block; }
   }
 </style>
 </head>
@@ -65,8 +78,9 @@
   <section class="game" aria-label="Play the game">
     <iframe src="play/" title="Time Escape: Stuff From The Past, playable game"></iframe>
     <div class="game-bar">
-      <span>Click the game, then press <kbd>X</kbd> to page through the intro. You need a keyboard.</span>
-      <a class="button" href="play/">Play full window</a>
+      <span class="hint-desktop">Click the game, then press <kbd>X</kbd> to page through the intro. You need a keyboard.</span>
+      <span class="hint-touch">Tap <b>X</b> to page through the intro. Play with the buttons under the game.</span>
+      <a class="button" href="play/">Play full screen</a>
     </div>
   </section>
 
@@ -100,6 +114,7 @@
       </ul>
 
       <h2>Controls</h2>
+      <p class="hint-touch">On a touch screen, the buttons under the game stand in for these keys.</p>
       <dl class="controls">
         <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Move</dd>
         <dt><kbd>X</kbd></dt><dd>Jump. Hold it for a higher jump.</dd>

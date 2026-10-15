@@ -149,11 +149,17 @@ void flx_text_draw(float x, float y, float width, const char *text, Color color)
 // --- Input ---
 // Key presses and releases are latched per rendered frame, then consumed by
 // the next fixed 60 Hz update. A press is never lost or seen twice, even on
-// 120 Hz screens. Held keys use raylib's IsKeyDown directly.
+// 120 Hz screens. A key counts as down if the keyboard or a touch button
+// holds it, so game code reads one input whatever the device.
 void flx_input_poll(void);
 void flx_input_clear(void);
+bool flx_key_down(int key);
 bool flx_key_pressed(int key);
 bool flx_key_released(int key);
+
+// Called by the on-screen touch controls on the web (touch-controls.js)
+// with a raylib key code, when a button goes down or up.
+void flx_touch_key(int key, bool down);
 
 float flx_random(void); // 0 <= n < 1, like Math.random()
 

@@ -81,6 +81,40 @@ int main(void)
     }
     assert(!target.sprite.alive);
 
+    // Touch buttons act like keys: a press and a release each latch once,
+    // and the key reads as held in between. Repeated events are ignored.
+    flx_input_clear();
+    flx_touch_key(KEY_X, true);
+    flx_touch_key(KEY_X, true);
+    assert(flx_key_pressed(KEY_X) && flx_key_down(KEY_X) && !flx_key_released(KEY_X));
+    flx_input_clear();
+    assert(!flx_key_pressed(KEY_X) && flx_key_down(KEY_X));
+    flx_touch_key(KEY_X, false);
+    assert(flx_key_released(KEY_X) && !flx_key_down(KEY_X));
+    flx_input_clear();
+
+    // Holding the touch jump button jumps higher than tapping it.
+    float peaks[2];
+    for (int hold = 0; hold < 2; hold++) {
+        Player jumper;
+        player_init(&jumper, spawn.x, spawn.y);
+        for (int i = 0; i < 120; i++) { // land first
+            flx_tilemap_collide(&map, &jumper.sprite);
+            player_update(&jumper, flx_tilemap_height(&map));
+        }
+        float ground = jumper.sprite.y, peak = ground;
+        for (int i = 0; i < 60; i++) {
+            if (i == 0) flx_touch_key(KEY_X, true);
+            if (i == (hold ? 20 : 1)) flx_touch_key(KEY_X, false);
+            flx_tilemap_collide(&map, &jumper.sprite);
+            player_update(&jumper, flx_tilemap_height(&map));
+            flx_input_clear();
+            if (jumper.sprite.y < peak) peak = jumper.sprite.y;
+        }
+        peaks[hold] = ground - peak;
+    }
+    assert(peaks[0] > 0 && peaks[1] > peaks[0] + 4);
+
     flx_tilemap_unload(&map);
     UnloadImage(hq);
     UnloadImage(level);

@@ -49,6 +49,7 @@ Tips
 
 
 CONTROLS
+On a phone or tablet, on-screen buttons under the game match these keys.
 Left and Right arrows: move
 X: jump. Hold it for a higher jump.
 C: swing the sword, once you have it
@@ -86,7 +87,7 @@ Upload: timeescape-itch.zip, and tick "This file will be played in the browser"
 Embed options: Embed in page
 Viewport dimensions: 480 x 320
 Tick "Fullscreen button". The game scales up sharply in fullscreen.
-Leave "Mobile friendly" unticked. The game needs a keyboard.
+Tick "Mobile friendly". If an Orientation setting appears, choose Portrait. Touch screens get on-screen controls under the game.
 Frame options: leave "Automatically start on page load" unticked. The click on "Run game" gives the game keyboard focus.
 Release status: Released
 Classification: Games

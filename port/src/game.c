@@ -546,8 +546,8 @@ static void die_first_hit(void)
 static void update_die(void)
 {
     FlxSprite *ps = &state.player.sprite;
-    bool anyKey = IsKeyDown(KEY_X) || IsKeyDown(KEY_C) || IsKeyDown(KEY_UP) ||
-                  IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_DOWN);
+    bool anyKey = flx_key_down(KEY_X) || flx_key_down(KEY_C) || flx_key_down(KEY_UP) ||
+                  flx_key_down(KEY_LEFT) || flx_key_down(KEY_RIGHT) || flx_key_down(KEY_DOWN);
     if (state.skull.alpha > 0.5f && anyKey) switch_state(STATE_HQ);
 
     if (state.skull.alpha < 1) state.skull.alpha = fminf(1, state.skull.alpha + flx_elapsed / 2);
