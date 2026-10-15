@@ -1,7 +1,7 @@
 # Time Escape (C port)
 
 A C rewrite of the post-compo version of "Stuff From The Past", a Ludum Dare 21 game from 2011.
-It is built on raylib 6.0. raylib is vendored in `vendor/raylib`, so builds need no network.
+It is built on raylib 6.0. CMake downloads raylib on the first configure, checks it against a pinned SHA-256 hash, and links it statically. Every build is self-contained, with no raylib library to ship beside it.
 
 Arrow keys move, X jumps, and C swings the sword once you have it.
 Take the sword from the cave and escape back through the portal.
@@ -26,7 +26,7 @@ Black pixels are solid ground. Colored pixels mark the spawn point, portals, the
 
 ## Build
 
-Desktop (macOS, Windows, Linux) needs CMake 3.16 or newer and a C compiler.
+Desktop (macOS, Windows, Linux) needs CMake 3.24 or newer, a C compiler, and network access on the first configure.
 
 ```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -72,12 +72,13 @@ Logic checks run from this folder:
 These tools are deterministic: the same code gives the same result every run.
 
 Static analysis reads the code without running it.
+Run it after a desktop configure, which downloads the raylib headers into `build/`.
 
 ```sh
 cppcheck --enable=warning,performance,portability,style --std=c99 \
     -D__STDC__=1 -D__STDC_VERSION__=199901L --quiet \
-    -I src -I vendor/raylib/src --suppress=missingIncludeSystem src tests
-for f in src/*.c tests/*.c; do clang --analyze -I src -I vendor/raylib/src "$f" -o /dev/null; done
+    -I src -I build/_deps/raylib-src/src --suppress=missingIncludeSystem src tests
+for f in src/*.c tests/*.c; do clang --analyze -I src -I build/_deps/raylib-src/src "$f" -o /dev/null; done
 ```
 
 AddressSanitizer catches bad memory access, and UndefinedBehaviorSanitizer catches undefined behaviour.

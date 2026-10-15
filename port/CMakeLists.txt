@@ -1,16 +1,24 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.24)
 project(timeescape C)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# raylib is vendored, so builds need no network.
+# raylib 6.0 is downloaded on the first configure and checked against its
+# SHA-256 hash. It builds as a static library, so it ends up inside the game
+# binary or WebAssembly file, with no separate library to ship.
+include(FetchContent)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 if(EMSCRIPTEN)
     set(PLATFORM Web CACHE STRING "" FORCE)
 endif()
-add_subdirectory(vendor/raylib)
+FetchContent_Declare(raylib
+    URL https://github.com/raysan5/raylib/archive/refs/tags/6.0.tar.gz
+    URL_HASH SHA256=2b3ee1e2120c7a0796b33062c7e9a694dd8a8caa56a96319ac8c8ecf54a90d0b
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+FetchContent_MakeAvailable(raylib)
 
 add_executable(timeescape src/main.c src/game.c src/actors.c src/flx.c)
 target_link_libraries(timeescape raylib)
