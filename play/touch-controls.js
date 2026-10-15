@@ -16,7 +16,8 @@
 // On touch screens it adds a control bar under the game, fits the game to
 // the full width above it, and locks the page against zooming and scrolling.
 // Elsewhere it scales the game by a whole number of physical pixels, so the
-// pixel art stays sharp. Add ?touch=1 to the URL to force the touch layout.
+// pixel art stays sharp, as long as that gives at least 2x. Add ?touch=1 to
+// the URL to force the touch layout.
 (function () {
   'use strict';
 
@@ -157,11 +158,14 @@
       var roomH = document.body.clientHeight - parseFloat(body.paddingTop) - parseFloat(body.paddingBottom) - minHeight(bar);
       cssW = Math.min(roomW, roomH * w / h);
     } else {
-      // Keyboard layout: a whole number of physical pixels per game pixel.
-      // A window smaller than the game shrinks it to fit instead.
+      // Keyboard layout: a whole number of physical pixels per game pixel,
+      // when that reaches at least 2. Below 2x, rounding down would waste up
+      // to half the window, so the game fills the window at a fractional
+      // scale instead. This also shrinks a game larger than the window.
       var dpr = window.devicePixelRatio || 1;
-      var scale = Math.floor(Math.min(innerWidth * dpr / w, innerHeight * dpr / h));
-      cssW = scale >= 1 ? w * scale / dpr : w * Math.min(innerWidth / w, innerHeight / h);
+      var fill = Math.min(innerWidth / w, innerHeight / h);
+      var scale = Math.floor(fill * dpr);
+      cssW = scale >= 2 ? w * scale / dpr : w * fill;
     }
     canvas.style.width = cssW + 'px';
     canvas.style.height = (cssW * h / w) + 'px';

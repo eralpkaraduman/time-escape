@@ -53,6 +53,11 @@
   h2 { font-size: 16px; margin: 36px 0 8px; color: var(--accent-strong); text-transform: uppercase; letter-spacing: 0.05em; }
   article > h2:first-child { margin-top: 0; }
   p, ol, ul { margin: 0 0 12px; }
+  /* Text lines stay short enough to read, about 68 characters. The unit is
+     em, not ch. A ch is the width of a zero, much wider than an
+     average letter. The game, the screenshots and the info table still use
+     the full column width. */
+  article p, article ol, article ul, .controls, .note { max-width: 32em; }
   li { margin-bottom: 4px; }
   .controls { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
   .controls dt { font-weight: 600; }
@@ -60,7 +65,10 @@
   kbd { display: inline-block; min-width: 1.6em; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--surface); font: 13px/1.6 ui-monospace, monospace; text-align: center; }
   .shots { display: grid; gap: 16px; margin-top: 8px; }
   .shots.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .shots img { border-radius: 6px; border: 1px solid var(--border); width: 100%; }
+  /* Screenshots are stored at 3x and shown smaller. Pixelated scaling only
+     helps when it enlarges. When it shrinks, it drops whole pixel rows, so
+     smooth scaling looks more even here. */
+  .shots img { border-radius: 6px; border: 1px solid var(--border); width: 100%; image-rendering: auto; }
   .note { font-size: 14px; color: var(--muted); }
   /* "More information", like the table at the end of an itch.io page. */
   .info { width: 100%; border-collapse: collapse; font-size: 14px; }
