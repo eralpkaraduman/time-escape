@@ -2,6 +2,9 @@
 //   ./build/timeescape_check
 #include "../src/game.h"
 
+// Release builds define NDEBUG, which would remove every assert below,
+// including the setup calls written inside them. Keep them in all builds.
+#undef NDEBUG
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
