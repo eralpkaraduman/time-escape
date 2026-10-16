@@ -45,8 +45,8 @@
    would shrink it, as in landscape. The game fills as much of the screen as
    it can, centred. The bar spans the screen on top of it, with the D-pad in
    the lower left and the buttons in the lower right, where thumbs rest.
-   Only the buttons take touches. A dark tint keeps them visible over the
-   game's art. */
+   Only the buttons take touches. They are half see-through, so the game
+   shows through them, and turn more solid while pressed. */
 .tc-overlay .tc-console { justify-content: center; }
 .tc-overlay .tc-console > .tc-bar {
   position: fixed;
@@ -60,8 +60,8 @@
 }
 .tc-overlay .tc-dpad,
 .tc-overlay .tc-actions { pointer-events: auto; }
-.tc-overlay .tc-button { background: rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.5); }
-.tc-overlay .tc-button.tc-pressed { background: rgba(255, 255, 255, 0.4); }
+.tc-overlay .tc-button { background: rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.6); opacity: 0.45; }
+.tc-overlay .tc-button.tc-pressed { background: rgba(255, 255, 255, 0.4); opacity: 0.85; }
 
 .tc-bar {
   /* Buttons grow with the screen's short side, never below the 44 px minimum
