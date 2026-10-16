@@ -142,12 +142,23 @@
     document.addEventListener('touchstart', block, { passive: false });
   }
 
-  // The least height the bar needs: its tallest group plus its padding.
-  // The game gets the rest of the screen. The bar may grow beyond this.
+  // Space the bar's layouts take besides the buttons, matching
+  // touch-controls.css: under the game, 12 px above the buttons and 28 px
+  // below. Beside the game, 24 px from the screen edge and 16 px to the game.
+  var UNDER_PADDING = 12 + 28;
+  var BESIDE_PADDING = 24 + 16;
+
+  function groupSizes(bar) {
+    var dpad = bar.querySelector('.tc-dpad'), actions = bar.querySelector('.tc-actions');
+    return {
+      width: Math.max(dpad.offsetWidth, actions.offsetWidth),
+      height: Math.max(dpad.offsetHeight, actions.offsetHeight),
+    };
+  }
+
+  // The least height the bar needs under the game. The bar may grow beyond it.
   function minHeight(bar) {
-    var style = getComputedStyle(bar);
-    var content = Math.max(bar.querySelector('.tc-dpad').offsetHeight, bar.querySelector('.tc-actions').offsetHeight);
-    return content + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    return groupSizes(bar).height + UNDER_PADDING;
   }
 
   // Sizes the canvas with CSS. The canvas's own width and height are the
@@ -157,12 +168,21 @@
     if (!w || !h) return;
     var cssW;
     if (bar) {
-      // Touch layout: full width, with the bar's height kept free below.
-      // The body's padding holds the notch and home-indicator insets.
+      // Touch layout. The controls go under the game, or beside it with the
+      // D-pad left and the buttons right, whichever shows the game bigger.
+      // A wide game in landscape, like 3:1, stays bigger with the bar under
+      // it. A squarer one, like 3:2, gets bigger with the controls beside it.
+      // The controls never cover the game. The body's padding holds the
+      // notch and home-indicator insets.
       var body = getComputedStyle(document.body);
       var roomW = document.body.clientWidth - parseFloat(body.paddingLeft) - parseFloat(body.paddingRight);
-      var roomH = document.body.clientHeight - parseFloat(body.paddingTop) - parseFloat(body.paddingBottom) - minHeight(bar);
-      cssW = Math.min(roomW, roomH * w / h);
+      var roomH = document.body.clientHeight - parseFloat(body.paddingTop) - parseFloat(body.paddingBottom);
+      var groups = groupSizes(bar);
+      var underW = Math.min(roomW, (roomH - groups.height - UNDER_PADDING) * w / h);
+      var besideW = Math.min(roomW - 2 * (groups.width + BESIDE_PADDING), roomH * w / h);
+      var beside = besideW > underW;
+      document.documentElement.classList.toggle('tc-beside', beside);
+      cssW = beside ? besideW : underW;
     } else {
       // Keyboard layout: a whole number of physical pixels per game pixel,
       // when that reaches at least 2. Below 2x, rounding down would waste up
