@@ -41,24 +41,27 @@
   padding-bottom: 28px;
 }
 
-/* Controls beside the game, switched on by fit() when that shows the game
-   bigger, mostly in landscape. The bar spans the screen with the D-pad at
-   the left edge and the buttons at the right, low where thumbs rest. Only
-   the buttons take touches, and the game sits centred between them.
-   The 24 px edge distance must match BESIDE_PADDING in touch-controls.js. */
-.tc-beside .tc-console { justify-content: center; }
-.tc-beside .tc-console > .tc-bar {
+/* Controls over the game, switched on by fit() when a bar under the game
+   would shrink it, as in landscape. The game fills as much of the screen as
+   it can, centred. The bar spans the screen on top of it, with the D-pad in
+   the lower left and the buttons in the lower right, where thumbs rest.
+   Only the buttons take touches. A dark tint keeps them visible over the
+   game's art. */
+.tc-overlay .tc-console { justify-content: center; }
+.tc-overlay .tc-console > .tc-bar {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  padding: env(safe-area-inset-top) calc(24px + env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
+  padding: env(safe-area-inset-top) calc(24px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
   background: transparent;
   pointer-events: none;
 }
-.tc-beside .tc-dpad,
-.tc-beside .tc-actions { pointer-events: auto; }
+.tc-overlay .tc-dpad,
+.tc-overlay .tc-actions { pointer-events: auto; }
+.tc-overlay .tc-button { background: rgba(0, 0, 0, 0.3); border-color: rgba(255, 255, 255, 0.5); }
+.tc-overlay .tc-button.tc-pressed { background: rgba(255, 255, 255, 0.4); }
 
 .tc-bar {
   /* Buttons grow with the screen's short side, never below the 44 px minimum
