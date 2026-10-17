@@ -120,26 +120,45 @@
     return bar;
   }
 
-  // The usual mobile web game setup: the page never zooms, scrolls, selects
-  // text or opens long-press menus, so every touch goes to the game.
-  // CSS covers most of it (.tc-mobile in touch-controls.css). iOS Safari
-  // ignores user-scalable=no for pinch, so its gesture events are blocked too.
+  // True when the game page sits in a frame inside another page, like the
+  // cover page or an itch.io page.
+  function isEmbedded() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true; // a cross-origin parent hides window.top
+    }
+  }
+
+  // The usual mobile web game setup: the page never zooms, selects text or
+  // opens long-press menus, so every touch goes to the game. CSS covers most
+  // of it (.tc-mobile in touch-controls.css). iOS Safari ignores
+  // user-scalable=no for pinch, so its gesture events are blocked too.
+  //
+  // Standalone, the page never scrolls either. Embedded in another page, an
+  // up or down swipe over the game scrolls that page instead, so readers can
+  // reach the text below the game. The control bar never scrolls, either way.
   function lockPage() {
+    var embedded = isEmbedded();
     document.documentElement.classList.add('tc-mobile');
+    document.documentElement.classList.toggle('tc-embedded', embedded);
     var block = function (e) { e.preventDefault(); };
     ['gesturestart', 'gesturechange', 'gestureend', 'dblclick', 'contextmenu'].forEach(function (type) {
       document.addEventListener(type, block, { passive: false });
     });
-    // A second finger landing anywhere must not start a pinch.
+    // A second finger landing anywhere must not start a pinch. These page
+    // listeners run in the capture phase, before setup() keeps touches away
+    // from the game's own canvas listeners.
     document.addEventListener('touchmove', function (e) {
       if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
+    }, { passive: false, capture: true });
     // iOS Safari has no setting to turn off its edge swipe back and forward,
     // and ignores overscroll-behavior for it. Since iOS 13.4, cancelling
-    // touchstart blocks that swipe. This page never scrolls and has no links,
-    // so every touch start can be cancelled. Pointer events, which the
-    // control bar uses, still arrive.
-    document.addEventListener('touchstart', block, { passive: false });
+    // touchstart blocks that swipe. The standalone page never scrolls and has
+    // no links, so every touch start can be cancelled. Pointer events, which
+    // the control bar uses, still arrive. Embedded, cancelling would also stop
+    // the outer page from scrolling, so it is left alone.
+    if (!embedded) document.addEventListener('touchstart', block, { passive: false, capture: true });
   }
 
   // Space the bar takes under the game besides its buttons, matching
@@ -191,6 +210,14 @@
     if (shouldShow()) {
       lockPage();
       bar = attach(options.frame, options);
+      // raylib listens for touches on the canvas and cancels them, which
+      // stops an embedded page from scrolling over the game. The game reads
+      // touch only through the bar, so canvas touches never reach raylib.
+      ['touchstart', 'touchmove', 'touchend', 'touchcancel'].forEach(function (type) {
+        options.frame.addEventListener(type, function (e) {
+          if (e.target === options.canvas) e.stopPropagation();
+        }, { capture: true, passive: true });
+      });
     }
     var refit = function () { fit(options.canvas, bar); };
     window.addEventListener('resize', refit);

@@ -12,6 +12,14 @@
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
 }
+/* Embedded in another page: an up or down swipe over the game scrolls that
+   page, and the scroll may carry over to it. Pinch and double-tap zoom stay
+   off. The control bar keeps touch-action: none, so it never scrolls. */
+.tc-mobile.tc-embedded,
+.tc-mobile.tc-embedded body {
+  touch-action: pan-y;
+  overscroll-behavior: auto;
+}
 .tc-mobile body {
   /* A column that fills the screen, clear of the notch and home indicator. */
   display: flex;
