@@ -624,6 +624,7 @@ void flx_text_draw(float x, float y, float width, const char *text, Color color)
 static bool pressed[KEY_SLOTS];
 static bool released[KEY_SLOTS];
 static bool touchDown[KEY_SLOTS];
+static bool padDown[KEY_SLOTS];
 
 // Touch events arrive between frames, so they latch presses and releases
 // just like the keyboard does in flx_input_poll.
@@ -640,11 +641,37 @@ void flx_touch_key(int key, bool down)
 
 bool flx_key_down(int key)
 {
-    return IsKeyDown(key) || touchDown[key];
+    return IsKeyDown(key) || touchDown[key] || padDown[key];
+}
+
+// Any connected gamepad stands in for the keys too. The D-pad and left stick
+// are the arrows, the bottom face button is X and the left face button is C.
+static void gamepad_poll(void)
+{
+    static const int keys[] = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_X, KEY_C};
+    bool down[6] = {0};
+    for (int g = 0; g < 4; g++) {
+        if (!IsGamepadAvailable(g)) continue;
+        float x = GetGamepadAxisMovement(g, GAMEPAD_AXIS_LEFT_X);
+        float y = GetGamepadAxisMovement(g, GAMEPAD_AXIS_LEFT_Y);
+        down[0] |= x < -0.5f || IsGamepadButtonDown(g, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
+        down[1] |= x > 0.5f || IsGamepadButtonDown(g, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
+        down[2] |= y < -0.5f || IsGamepadButtonDown(g, GAMEPAD_BUTTON_LEFT_FACE_UP);
+        down[3] |= y > 0.5f || IsGamepadButtonDown(g, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+        down[4] |= IsGamepadButtonDown(g, GAMEPAD_BUTTON_RIGHT_FACE_DOWN);
+        down[5] |= IsGamepadButtonDown(g, GAMEPAD_BUTTON_RIGHT_FACE_LEFT);
+    }
+    for (int i = 0; i < 6; i++) {
+        if (padDown[keys[i]] == down[i]) continue;
+        padDown[keys[i]] = down[i];
+        if (down[i]) pressed[keys[i]] = true;
+        else released[keys[i]] = true;
+    }
 }
 
 void flx_input_poll(void)
 {
+    gamepad_poll();
     for (int key = 0; key < KEY_SLOTS; key++) {
         if (IsKeyPressed(key)) pressed[key] = true;
         if (IsKeyReleased(key)) released[key] = true;

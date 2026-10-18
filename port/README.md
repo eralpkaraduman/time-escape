@@ -28,7 +28,7 @@ On a touch screen, a control bar sits under the game: left and right, X to jump 
 The game fills the screen width, and the page never zooms or scrolls.
 With a keyboard, the bar stays hidden. Add `?touch=1` to the address to test the touch layout on a desktop.
 
-The bar calls `flx_touch_key()` in `src/flx.c`, which feeds the same input as the keyboard.
+The bar calls `flx_touch_key()` in `src/flx.c`, which feeds the same input as the keyboard. A gamepad feeds it too, through `gamepad_poll()` in the same file. The D-pad or left stick is the arrows, the bottom face button is X, and the left face button is C.
 
 The web page and the touch controls are shared with Kurban Bayrami, which keeps them in its `port/web/`.
 On every configure, CMake downloads `shell.html.in`, `site.html.in`, `touch-controls.js` and `touch-controls.css` from that repo's `main` branch.

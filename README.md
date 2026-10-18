@@ -10,7 +10,7 @@ The post-compo version only survived as a compiled SWF. In October 2026 it was r
 - [Game page](https://eralpkaraduman.github.io/time-escape/), with the description, controls and screenshots.
 - [Game only](https://eralpkaraduman.github.io/time-escape/play/), full window.
 
-It runs in the browser on desktop with a keyboard, and on phones and tablets with on-screen controls.
+It runs in the browser on desktop with a keyboard or gamepad, and on phones and tablets with on-screen controls.
 
 ## What is here
 
@@ -32,3 +32,5 @@ It runs in the browser on desktop with a keyboard, and on phones and tablets wit
 ## Controls
 
 Arrow keys move. X jumps, and holding it jumps higher. C swings the sword once you have it.
+
+On a gamepad, the D-pad or left stick is the arrows. The bottom face button is X, and the left face button is C.
